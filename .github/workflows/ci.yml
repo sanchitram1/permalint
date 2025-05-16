@@ -23,7 +23,10 @@ jobs:
             astral.sh/ty@latest
             pytest.org@latest
 
-      - name: Install project
+      - name: Lock the dependencies
+        run: pkgx uv lock
+
+      - name: Install the project
         run: pkgx uv sync --locked --all-extras --dev
 
       - name: Lint with Ruff
