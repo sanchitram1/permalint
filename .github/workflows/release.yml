@@ -1,0 +1,23 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*" # Triggers on tags like v1.0.0
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup with pkgx
+        uses: pkgxdev/setup@v4
+        with:
+          +: astral.sh/uv@^0.7
+
+      - name: Build
+        run: uv build
+
+      - name: Publish
+        run: uv publish -t ${{ secrets.PYPI_API_TOKEN }}

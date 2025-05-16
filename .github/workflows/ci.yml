@@ -18,7 +18,7 @@ jobs:
       - name: Setup with pkgx
         uses: pkgxdev/setup@v4
         with:
-          +: astral.sh/uv@latest
+          +: astral.sh/uv@^0.7
             astral.sh/ruff@latest
             astral.sh/ty@latest
             pytest.org@latest
