@@ -18,10 +18,10 @@ jobs:
       - name: Setup with pkgx
         uses: pkgxdev/setup@v4
         with:
-          +: astral.sh/uv@^0.7
-            astral.sh/ruff@latest
-            astral.sh/ty@latest
-            pytest.org@latest
+          +: astral.sh/uv
+            astral.sh/ruff
+            astral.sh/ty
+            pytest.org
 
       - name: Lock the dependencies
         run: pkgx uv lock
