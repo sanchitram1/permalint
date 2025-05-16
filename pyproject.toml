@@ -1,6 +1,6 @@
 [project]
 name = "permalint"
-version = "0.1.0"
+version = "0.1.3"
 description = "Lint URLs"
 authors = [{ name = "Sanchit Ram Arvind", email = "sanchitram@gmail.com" }]
 dependencies = ["ruff~=0.0"]
