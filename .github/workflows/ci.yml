@@ -23,6 +23,9 @@ jobs:
             astral.sh/ty@latest
             pytest.org@latest
 
+      - name: Install project
+        run: uv sync --locked --all-extras --dev
+
       - name: Lint with Ruff
         uses: astral-sh/ruff-action@v3
         with:
@@ -33,4 +36,4 @@ jobs:
           ty check src/ tests/
       - name: Run tests with pytest
         run: |
-          pytest
+          tests
