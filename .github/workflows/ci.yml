@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-lint-typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Rye and dependencies
+        run: |
+          curl -sSf https://rye.astral.sh/get | bash
+          rye sync
+
+      - name: Run tests
+        run: rye run pytest
+
+      - name: Lint with Ruff
+        uses: astral-sh/ruff-action@v3
+        with:
+          src: "./src"
+
+      - name: Type check with ty
+        run: rye run ty src/
