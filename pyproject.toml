@@ -7,6 +7,11 @@ dependencies = ["ruff~=0.0"]
 readme = "README.md"
 requires-python = ">= 3.12"
 
+[project.urls]
+Homepage = "https://github.com/sanchitram/permalint"
+Repository = "https://github.com/sanchitram/permalint"
+Source = "https://github.com/sanchitram/permalint"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
