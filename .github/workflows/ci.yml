@@ -14,8 +14,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup with pkgx
-        uses: pkgxdev/dev@v1
+        uses: pkgxdev/setup@v4
+        with:
+          +: astral.sh/uv@latest
+            astral.sh/ruff@latest
+            astral.sh/ty@latest
+            pytest.org@latest
+
       - name: Lint with Ruff
         uses: astral-sh/ruff-action@v3
         with:
