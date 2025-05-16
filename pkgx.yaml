@@ -1,5 +1,4 @@
 dependencies:
-  rye.astral.sh: latest
   astral.sh/uv: latest
   astral.sh/ty: latest
   python.org: 3.13.2
