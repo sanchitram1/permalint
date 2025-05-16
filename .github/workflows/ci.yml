@@ -14,15 +14,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup with pkgx
+        uses: pkgxdev/dev@v1
       - name: Lint with Ruff
         uses: astral-sh/ruff-action@v3
         with:
           src: ./src
       # TODO: ty is in beta rn. so this is experimental
-      - name: Setup environment with ty
-        uses: pkgxdev/setup@v4
-        with:
-          +: astral.sh/ty@0.0.0.8
       - name: Type check with ty
         run: |
           ty check src/ tests/

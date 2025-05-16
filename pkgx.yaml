@@ -2,3 +2,4 @@ dependencies:
   astral.sh/uv: latest
   astral.sh/ty: latest
   python.org: 3.13.2
+  pytest.org: ^8.3
