@@ -74,8 +74,10 @@ def possible_names(url: str) -> List[str]:
 
     names = []
     # Full path (netloc + path)
-    if path:
+    if path and netloc:
         names.append(f"{netloc}/{path}")
+    elif path:
+        names.append(path)
     else:
         names.append(netloc)
 
@@ -91,7 +93,7 @@ def possible_names(url: str) -> List[str]:
                 names.append(seg)
 
     # Add just the domain
-    if netloc not in names:
+    if netloc and netloc not in names:
         names.append(netloc)
 
     return names

@@ -21,6 +21,7 @@ import pytest
                 "taku910.github.io",
             ],
         ),
+        ("mozilla.org/cbindgen", ["mozilla.org/cbindgen", "cbindgen", "mozilla.org"]),
     ],
 )
 def test_possible_names(input_name, probable_names):
