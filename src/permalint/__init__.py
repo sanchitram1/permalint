@@ -9,6 +9,8 @@ Exports:
 from typing import List, Optional, Set
 from urllib.parse import ParseResult, urlparse
 
+import tldextract
+
 
 def normalize_url(url: str) -> str:
     """
@@ -82,13 +84,16 @@ def possible_names(url: str) -> List[str]:
     if path:
         names.append(f"{netloc}/{path}")
         names.append(path.split("/")[-1])
-        names.append(netloc)
     else:
         # Domain-only URLs
         names.append(netloc)
-        domain_parts = netloc.split(".")
-        if len(domain_parts) > 2:
-            names.append(domain_parts[0])  # e.g., "poppler"
-            names.append(".".join(domain_parts[-2:]))  # e.g., "freedesktop.org"
+
+        netloc_parts = tldextract.extract(netloc)
+        # in poppler.freedesktop.org, the subdomain is "poppler"
+        if netloc_parts.subdomain:
+            names.append(netloc_parts.subdomain)
+        # in poppler.freedesktop.org, the domain is "freedesktop"
+        if netloc_parts.domain:
+            names.append(netloc_parts.domain)
 
     return names
