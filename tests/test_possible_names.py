@@ -22,6 +22,18 @@ import pytest
             ],
         ),
         ("mozilla.org/cbindgen", ["mozilla.org/cbindgen", "cbindgen", "mozilla.org"]),
+        (
+            "poppler.freedesktop.org",
+            ["poppler.freedesktop.org", "poppler", "freedesktop.org"],
+        ),
+        (
+            "poppler.freedesktop.org/poppler-data",
+            [
+                "poppler.freedesktop.org/poppler-data",
+                "poppler-data",
+                "poppler.freedesktop.org",
+            ],
+        ),
     ],
 )
 def test_possible_names(input_name, probable_names):

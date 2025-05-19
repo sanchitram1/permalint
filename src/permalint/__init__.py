@@ -64,6 +64,10 @@ def possible_names(url: str) -> List[str]:
     """
     from urllib.parse import urlparse
 
+    # Handle URLs without scheme
+    if not url.startswith(("http://", "https://")):
+        url = "https://" + url
+
     parsed = urlparse(url)
     netloc = parsed.netloc.lower()
     path = parsed.path.strip("/")
@@ -73,27 +77,18 @@ def possible_names(url: str) -> List[str]:
         netloc = netloc[4:]
 
     names = []
+
     # Full path (netloc + path)
-    if path and netloc:
-        names.append(f"{netloc}/{path}")
-    elif path:
-        names.append(path)
-    else:
-        names.append(netloc)
-
-    # Path segments
     if path:
-        segments = path.split("/")
-        # Add last segment (most specific)
-        if segments:
-            names.append(segments[-1])
-        # Add all individual segments (if not already present)
-        for seg in segments:
-            if seg not in names:
-                names.append(seg)
-
-    # Add just the domain
-    if netloc and netloc not in names:
+        names.append(f"{netloc}/{path}")
+        names.append(path.split("/")[-1])
         names.append(netloc)
+    else:
+        # Domain-only URLs
+        names.append(netloc)
+        domain_parts = netloc.split(".")
+        if len(domain_parts) > 2:
+            names.append(domain_parts[0])  # e.g., "poppler"
+            names.append(".".join(domain_parts[-2:]))  # e.g., "freedesktop.org"
 
     return names
