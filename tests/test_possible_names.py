@@ -26,6 +26,7 @@ import pytest
             ["poppler.freedesktop.org/poppler-data", "poppler-data"],
         ),
         ("elfutils.org", ["elfutils.org", "elfutils"]),
+        ("hdfgroup.org/HDF5", ["hdfgroup.org/HDF5", "HDF5", "hdf5"]),
     ],
 )
 def test_possible_names(input_name, probable_names):

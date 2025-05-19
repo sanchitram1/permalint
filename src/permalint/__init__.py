@@ -9,8 +9,6 @@ Exports:
 from typing import List, Optional, Set
 from urllib.parse import ParseResult, urlparse
 
-import tldextract
-
 
 def normalize_url(url: str) -> str:
     """
@@ -66,6 +64,8 @@ def possible_names(url: str) -> List[str]:
     """
     from urllib.parse import urlparse
 
+    # NOTE: I don't like this, ideally upstream application should handle searching by whatever case, but this is fine for now
+
     # Handle URLs without scheme
     if not url.startswith(("http://", "https://")):
         url = "https://" + url
@@ -82,18 +82,25 @@ def possible_names(url: str) -> List[str]:
 
     # Full path (netloc + path)
     if path:
-        names.append(f"{netloc}/{path}")
-        names.append(path.split("/")[-1])
+        full_path = f"{netloc}/{path}"
+        names.append(full_path)
+        last_segment = path.split("/")[-1]
+        names.append(last_segment)
+        # Add lowercase version if original has uppercase
+        if last_segment.lower() != last_segment:
+            names.append(last_segment.lower())
     else:
         # Domain-only URLs
         names.append(netloc)
-
-        netloc_parts = tldextract.extract(netloc)
-        # in poppler.freedesktop.org, the subdomain is "poppler"
-        if netloc_parts.subdomain:
-            names.append(netloc_parts.subdomain)
-        # in poppler.freedesktop.org, the domain is "freedesktop"
-        if netloc_parts.domain:
-            names.append(netloc_parts.domain)
+        # For domains like elfutils.org, extract the name part
+        domain_parts = netloc.split(".")
+        if len(domain_parts) > 1:
+            if len(domain_parts) > 2:
+                # For cases like poppler.freedesktop.org
+                names.append(domain_parts[0])  # e.g., "poppler"
+                names.append(domain_parts[1])  # e.g., "freedesktop"
+            else:
+                # For cases like elfutils.org
+                names.append(domain_parts[0])  # e.g., "elfutils"
 
     return names
