@@ -21,7 +21,8 @@ from permalint import possible_names
             "poppler.freedesktop.org",
             ["poppler.freedesktop.org", "poppler", "freedesktop"],
         ),
-        # there's a path here, so we're really only interested in the last segment
+        # there's a path here, so we're really only interested in the last
+        # segment
         (
             "poppler.freedesktop.org/poppler-data",
             ["poppler.freedesktop.org/poppler-data", "poppler-data"],
@@ -30,5 +31,5 @@ from permalint import possible_names
         ("hdfgroup.org/HDF5", ["hdfgroup.org/HDF5", "HDF5", "hdf5"]),
     ],
 )
-def test_possible_names(input_name, probable_names) -> None:
+def test_possible_names(input_name: str, probable_names: list[str]) -> None:
     assert possible_names(input_name) == probable_names

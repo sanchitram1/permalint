@@ -1,14 +1,16 @@
 """permalint: Lint URLs.
 
 Exports:
-    - normalize_url: Normalize URLs so it's easy to figure out canonical sources
-      of truth
-    for packages
+    - normalize_url: Normalize URLs so it's easy to figure out canonical
+      sources of truth for packages
 """
 
 from __future__ import annotations
 
 from urllib.parse import ParseResult, urlparse
+
+MIN_GITHUB_URL_PARTS = 2
+MULTIPLE_DOMAINS = 2
 
 
 def normalize_url(url: str) -> str:
@@ -50,7 +52,7 @@ def normalize_url(url: str) -> str:
     # GitHub special handling
     if netloc == "github.com":
         parts = [p for p in path.split("/") if p]
-        if len(parts) >= 2:
+        if len(parts) >= MIN_GITHUB_URL_PARTS:
             path = f"{parts[0]}/{parts[1]}"
         elif parts:
             path = parts[0]
@@ -116,7 +118,7 @@ def possible_names(url: str) -> list[str]:
         # For domains like elfutils.org, extract the name part
         domain_parts = netloc.split(".")
         if len(domain_parts) > 1:
-            if len(domain_parts) > 2:
+            if len(domain_parts) > MULTIPLE_DOMAINS:
                 # For cases like poppler.freedesktop.org
                 names.append(domain_parts[0])  # e.g., "poppler"
                 names.append(domain_parts[1])  # e.g., "freedesktop"

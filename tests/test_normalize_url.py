@@ -56,5 +56,5 @@ from permalint import normalize_url
         ),
     ],
 )
-def test_normalize_url(input_url, expected) -> None:
+def test_normalize_url(input_url: str, expected: str) -> None:
     assert normalize_url(input_url) == expected
