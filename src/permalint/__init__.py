@@ -18,10 +18,15 @@ def normalize_url(url: str) -> str:
     - Remove query strings and fragments
     - Remove trailing slashes
     - Lowercase the domain
+    - Remove .git suffix
     """
     parsed = urlparse(url)
     netloc = parsed.netloc.lower()
     path = parsed.path.rstrip("/")
+
+    # Remove .git suffix if present
+    if path.endswith(".git"):
+        path = path[:-4]
 
     # Remove www. for consistency
     if netloc.startswith("www."):

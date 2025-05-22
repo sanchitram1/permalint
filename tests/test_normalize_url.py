@@ -29,6 +29,15 @@ import pytest
             "https://files.pythonhosted.org/packages/cf/76/54e0964e2974becb673baca69417b6c6293e930d4ebcf2a2a68c1fe9704a/bpython-0.24.tar.gz",
             "files.pythonhosted.org/packages/cf/76/54e0964e2974becb673baca69417b6c6293e930d4ebcf2a2a68c1fe9704a/bpython-0.24.tar.gz",
         ),
+        (
+            "github.com/MatteoBax/ascii-progressbar.git",
+            "github.com/MatteoBax/ascii-progressbar",
+        ),
+        ("git+https://github.com/seymoe/mieo.git", "github.com/seymoe/mieo"),
+        (
+            "git@github.com:chf007/egg-qywx-login.git",
+            "github.com/chf007/egg-qywx-login",
+        ),
     ],
 )
 def test_normalize_url(input_url, expected):
