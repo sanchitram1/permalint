@@ -1,6 +1,6 @@
 [project]
 name = "permalint"
-version = "0.1.8"
+version = "0.1.9"
 description = "Lint URLs"
 authors = [{ name = "Sanchit Ram Arvind", email = "sanchitram@gmail.com" }]
 dependencies = ["ruff~=0.0", "tldextract>=5.3.0"]
@@ -28,3 +28,10 @@ packages = ["src/permalint"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+ignore = ["D1", "D211", "D213", "S101"]
+select = ["ALL"]
