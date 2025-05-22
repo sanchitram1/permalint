@@ -28,3 +28,10 @@ packages = ["src/permalint"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+ignore = ["D1", "D211", "D213", "S101"]
+select = ["ALL"]
