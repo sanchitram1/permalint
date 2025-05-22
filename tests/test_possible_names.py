@@ -1,9 +1,10 @@
-from permalint import possible_names
 import pytest
+
+from permalint import possible_names
 
 
 @pytest.mark.parametrize(
-    "input_name,probable_names",
+    ("input_name", "probable_names"),
     [
         (
             "https://taku910.github.io/mecab/",
@@ -29,5 +30,5 @@ import pytest
         ("hdfgroup.org/HDF5", ["hdfgroup.org/HDF5", "HDF5", "hdf5"]),
     ],
 )
-def test_possible_names(input_name, probable_names):
+def test_possible_names(input_name, probable_names) -> None:
     assert possible_names(input_name) == probable_names

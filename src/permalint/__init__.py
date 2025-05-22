@@ -1,56 +1,73 @@
-"""
-permalint: Lint URLs
+"""permalint: Lint URLs.
 
 Exports:
-    - normalize_url: Normalize URLs so it's easy to figure out canonical sources of truth
+    - normalize_url: Normalize URLs so it's easy to figure out canonical sources
+      of truth
     for packages
 """
 
-from typing import List, Optional, Set
+from __future__ import annotations
+
 from urllib.parse import ParseResult, urlparse
 
 
 def normalize_url(url: str) -> str:
-    """
-    Normalize a URL according to CHAI database rules:
+    """Normalize a URL according to CHAI database rules.
+
     - Ignore protocol (http, https, etc.)
     - For GitHub URLs, keep only owner/repo
     - Remove query strings and fragments
     - Remove trailing slashes
     - Lowercase the domain
     - Remove .git suffix
+    - Handle SSH GitHub URLs (git@github.com:user/repo)
+    - Handle git+ssh and git+https GitHub URLs.
     """
+    # first, remove the .git suffix if it exists
+    url = url.removesuffix(".git")
+
+    # now, handle specific git style URLs: ssh, https, and git
+
+    # ssh-style GitHub URLs
+    if url.startswith("git@github.com:"):
+        url = url.replace("git@github.com:", "github.com/")
+
+    # git+ssh style GitHub URLs
+    if url.startswith("git+ssh://git@github.com/"):
+        url = url.replace("git+ssh://git@github.com/", "github.com/")
+
+    # git+https style GitHub URLs
+    if url.startswith("git+https://github.com/"):
+        url = url.replace("git+https://github.com/", "github.com/")
+
     parsed = urlparse(url)
     netloc = parsed.netloc.lower()
     path = parsed.path.rstrip("/")
 
-    # Remove .git suffix if present
-    if path.endswith(".git"):
-        path = path[:-4]
-
     # Remove www. for consistency
-    if netloc.startswith("www."):
-        netloc = netloc[4:]
+    netloc = netloc.removeprefix("www.")
 
     # GitHub special handling
     if netloc == "github.com":
         parts = [p for p in path.split("/") if p]
         if len(parts) >= 2:
-            return f"github.com/{parts[0]}/{parts[1]}"
+            path = f"{parts[0]}/{parts[1]}"
         elif parts:
-            return f"github.com/{parts[0]}"
+            path = parts[0]
         else:
-            return "github.com"
+            path = ""
+        return f"github.com/{path}".rstrip("/")
 
     # Remove query and fragment, ignore protocol
-    return f"{netloc}{path}" if netloc else path
+    result = f"{netloc}{path}" if netloc else path
+
+    # Remove .git suffix if present - handle this once at the end
+    return result.removesuffix(".git")
 
 
-def guess_url(urls: List[str]) -> Optional[str]:
-    """
-    Given a list of URLs, return the most likely canonical URL.
-    """
-    results: Set[ParseResult] = set()
+def guess_url(urls: list[str]) -> str | None:
+    """Given a list of URLs, return the most likely canonical URL."""
+    results: set[ParseResult] = set()
     for url in urls:
         normalized = normalize_url(url)
         if normalized in urls:
@@ -58,18 +75,18 @@ def guess_url(urls: List[str]) -> Optional[str]:
 
     if len(results) == 1:
         return results.pop()
-    else:
-        return None
+    return None
 
 
-def possible_names(url: str) -> List[str]:
-    """
-    Given a URL, return a list of possible names for the package.
+def possible_names(url: str) -> list[str]:
+    """Given a URL, return a list of possible names for the package.
+
     The list is ordered by relevance to the input.
     """
     from urllib.parse import urlparse
 
-    # NOTE: I don't like this, ideally upstream application should handle searching by whatever case, but this is fine for now
+    # NOTE: I don't like this, ideally upstream application should handle
+    # searching by whatever case, but this is fine for now
 
     # Handle URLs without scheme
     if not url.startswith(("http://", "https://")):
@@ -80,8 +97,7 @@ def possible_names(url: str) -> List[str]:
     path = parsed.path.strip("/")
 
     # Remove www. for consistency
-    if netloc.startswith("www."):
-        netloc = netloc[4:]
+    netloc = netloc.removeprefix("www.")
 
     names = []
 

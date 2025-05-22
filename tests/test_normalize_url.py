@@ -1,11 +1,15 @@
-from permalint import normalize_url
 import pytest
+
+from permalint import normalize_url
 
 
 @pytest.mark.parametrize(
-    "input_url,expected",
+    ("input_url", "expected"),
     [
-        ("https://github.com/user/repo?utm_source=foo#readme", "github.com/user/repo"),
+        (
+            "https://github.com/user/repo?utm_source=foo#readme",
+            "github.com/user/repo",
+        ),
         ("http://github.com/user/repo/", "github.com/user/repo"),
         ("https://www.github.com/user/repo", "github.com/user/repo"),
         ("https://github.com/user/repo/issues/123", "github.com/user/repo"),
@@ -33,12 +37,24 @@ import pytest
             "github.com/MatteoBax/ascii-progressbar.git",
             "github.com/MatteoBax/ascii-progressbar",
         ),
+        (
+            "https://github.com/seymoe/mieo.git",
+            "github.com/seymoe/mieo",
+        ),
         ("git+https://github.com/seymoe/mieo.git", "github.com/seymoe/mieo"),
         (
             "git@github.com:chf007/egg-qywx-login.git",
             "github.com/chf007/egg-qywx-login",
         ),
+        (
+            "git+ssh://git@github.com/bartdominiak/vue-snap.git",
+            "github.com/bartdominiak/vue-snap",
+        ),
+        (
+            "git://github.com/biggora/express-useragent.git",
+            "github.com/biggora/express-useragent",
+        ),
     ],
 )
-def test_normalize_url(input_url, expected):
+def test_normalize_url(input_url, expected) -> None:
     assert normalize_url(input_url) == expected
