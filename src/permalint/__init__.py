@@ -127,3 +127,8 @@ def possible_names(url: str) -> list[str]:
                 names.append(domain_parts[0])  # e.g., "elfutils"
 
     return names
+
+
+def is_canonical_url(url: str) -> bool:
+    """Check if a URL is canonical."""
+    return normalize_url(url) == url
