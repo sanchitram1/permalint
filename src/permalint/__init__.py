@@ -7,6 +7,8 @@ Exports:
 
 from __future__ import annotations
 
+import re
+import warnings
 from urllib.parse import ParseResult, urlparse
 
 MIN_GITHUB_URL_PARTS = 2
@@ -15,6 +17,8 @@ MULTIPLE_DOMAINS = 2
 
 def normalize_url(url: str) -> str:
     """Normalize a URL according to CHAI database rules.
+
+    It could return an empty string if the URL is only the protocol
 
     - Ignore protocol (http, https, etc.)
     - For GitHub URLs, keep only owner/repo
@@ -25,6 +29,30 @@ def normalize_url(url: str) -> str:
     - Handle SSH GitHub URLs (git@github.com:user/repo)
     - Handle git+ssh and git+https GitHub URLs.
     """
+    # early warnings
+    if url.strip() in (
+        "http://",
+        "https://",
+        "git://",
+        "ssh://",
+        "git+ssh://",
+        "git+https://",
+    ):
+        warnings.warn(
+            f"Malformed URL with only protocol: '{url}', returning ''",
+            UserWarning,
+            stacklevel=2,
+        )
+        return ""
+
+    if "://[" in url and "]." in url:
+        warnings.warn(
+            f"Found malformed brackets in URL: '{url}'",
+            UserWarning,
+            stacklevel=2,
+        )
+        url = re.sub(r"://\[([^\]]+)\]\.", r"://\1.", url)
+
     # first, remove the .git suffix if it exists
     url = url.removesuffix(".git")
 

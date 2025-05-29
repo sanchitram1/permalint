@@ -54,6 +54,14 @@ from permalint import normalize_url
             "git://github.com/biggora/express-useragent.git",
             "github.com/biggora/express-useragent",
         ),
+        (
+            "http://",
+            "",
+        ),
+        (
+            "https://[laoyang666].github.io/github-actions-demo",
+            "laoyang666.github.io/github-actions-demo",
+        ),
     ],
 )
 def test_normalize_url(input_url: str, expected: str) -> None:
