@@ -60,8 +60,9 @@ from permalint import normalize_url
         ),
         (
             "https://[laoyang666].github.io/github-actions-demo",
-            "laoyang666.github.io/github-actions-demo",
+            "",
         ),
+        ('http://  "files": [', ""),
     ],
 )
 def test_normalize_url(input_url: str, expected: str) -> None:

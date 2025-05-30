@@ -7,7 +7,6 @@ Exports:
 
 from __future__ import annotations
 
-import re
 import warnings
 from urllib.parse import ParseResult, urlparse
 
@@ -45,14 +44,6 @@ def normalize_url(url: str) -> str:
         )
         return ""
 
-    if "://[" in url and "]." in url:
-        warnings.warn(
-            f"Found malformed brackets in URL: '{url}'",
-            UserWarning,
-            stacklevel=2,
-        )
-        url = re.sub(r"://\[([^\]]+)\]\.", r"://\1.", url)
-
     # first, remove the .git suffix if it exists
     url = url.removesuffix(".git")
 
@@ -70,7 +61,16 @@ def normalize_url(url: str) -> str:
     if url.startswith("git+https://github.com/"):
         url = url.replace("git+https://github.com/", "github.com/")
 
-    parsed = urlparse(url)
+    try:
+        parsed = urlparse(url)
+    except ValueError as e:
+        warnings.warn(
+            f"Malformed URL: '{url}', error: {e}, returning ''",
+            UserWarning,
+            stacklevel=2,
+        )
+        return ""
+
     netloc = parsed.netloc.lower()
     path = parsed.path.rstrip("/")
 
