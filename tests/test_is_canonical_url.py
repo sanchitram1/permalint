@@ -13,6 +13,7 @@ from permalint import is_canonical_url
         ("github.com/MatteoBax/ascii-progressbar.git", False),
         ("git+ssh://git@github.com/bartdominiak/vue-snap.git", False),
         ("git://github.com/biggora/express-useragent.git", False),
+        ("", False),
     ],
 )
 def test_is_canonical_url(input_url: str, expected: bool) -> None:

@@ -159,4 +159,6 @@ def possible_names(url: str) -> list[str]:
 
 def is_canonical_url(url: str) -> bool:
     """Check if a URL is canonical."""
+    if url == "":
+        return False
     return normalize_url(url) == url
