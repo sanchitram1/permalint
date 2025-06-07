@@ -151,7 +151,8 @@ def possible_names(url: str) -> list[str]:
         if last_segment.lower() != last_segment:
             names.append(last_segment.lower())
     elif netloc == "gist.github.com" and path:
-        # For GitHub gists, only return the full URL since there's no meaningful repo name
+        # For GitHub gists, only return the full URL since there's no
+        # meaningful repo name
         pass
     elif netloc.endswith(".github.com") and path:
         # For GitHub pages, extract project name (last segment)
