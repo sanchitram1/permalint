@@ -118,9 +118,7 @@ def possible_names(url: str) -> list[str]:
     extracts the repository name. For other recognizable services, extracts
     the most relevant identifier.
     """
-    from urllib.parse import urlparse
-
-    # Handle URLs without scheme
+    # Treat the schema
     if not url.startswith(("http://", "https://")):
         url = "https://" + url
 
@@ -180,8 +178,9 @@ def possible_names(url: str) -> list[str]:
         domain_parts = netloc.split(".")
         if len(domain_parts) > 1:
             if len(domain_parts) > MULTIPLE_DOMAINS:
-                # For cases like poppler.freedesktop.org, only extract the subdomain
-                # since the middle domain (freedesktop) is not typically a package name
+                # For cases like poppler.freedesktop.org, only extract the
+                # subdomain, since the middle domain (freedesktop) is not
+                # typically a package name
                 names.append(domain_parts[0])  # e.g., "poppler"
             else:
                 # For cases like elfutils.org
@@ -198,8 +197,4 @@ def is_canonical_url(url: str) -> bool:
 
 
 if __name__ == "__main__":
-    print(
-        possible_names(
-            "gist.github.com/stning/89b6ce57e45a68e2da77a960770e5773"
-        )
-    )  # noqa: T201
+    pass
