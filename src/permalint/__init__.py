@@ -111,12 +111,14 @@ def guess_url(urls: list[str]) -> str | None:
 def possible_names(url: str) -> list[str]:
     """Given a URL, return a list of possible names for the package.
 
-    The list is ordered by relevance to the input.
+    The list is ordered by relevance to the input. The original URL is always
+    the first element in the returned list.
+
+    For known hosting platforms (github.com, gitlab.com, bitbucket.org),
+    extracts the repository name. For other recognizable services, extracts
+    the most relevant identifier.
     """
     from urllib.parse import urlparse
-
-    # NOTE: I don't like this, ideally upstream application should handle
-    # searching by whatever case, but this is fine for now
 
     # Handle URLs without scheme
     if not url.startswith(("http://", "https://")):
@@ -131,25 +133,55 @@ def possible_names(url: str) -> list[str]:
 
     names = []
 
-    # Full path (netloc + path)
+    # Always add the full URL first
     if path:
         full_path = f"{netloc}/{path}"
         names.append(full_path)
+    else:
+        names.append(netloc)
+
+    # Handle specific known platforms and services
+    if netloc in ("github.com", "gitlab.com", "bitbucket.org") and path:
+        # For code hosting platforms, extract repository name (last segment)
         last_segment = path.split("/")[-1]
         names.append(last_segment)
         # Add lowercase version if original has uppercase
+        # NOTE: I don't like this, ideally upstream application should handle
+        # searching by whatever case, but this is fine for now
+        if last_segment.lower() != last_segment:
+            names.append(last_segment.lower())
+    elif netloc == "gist.github.com" and path:
+        # For GitHub gists, only return the full URL since there's no meaningful repo name
+        pass
+    elif netloc.endswith(".github.com") and path:
+        # For GitHub pages, extract project name (last segment)
+        last_segment = path.split("/")[-1]
+        names.append(last_segment)
+    elif netloc == "cloud.google.com" and path:
+        # For Google Cloud, extract service name (first segment)
+        first_segment = path.split("/")[0]
+        names.append(first_segment)
+    elif netloc.endswith(".sourceforge.net"):
+        # For SourceForge, extract subdomain
+        subdomain = netloc.split(".")[0]
+        names.append(subdomain)
+    elif path:
+        # For other URLs with paths, extract last segment
+        last_segment = path.split("/")[-1]
+        names.append(last_segment)
+        # Add lowercase version if original has uppercase
+        # NOTE: I don't like this, ideally upstream application should handle
+        # searching by whatever case, but this is fine for now
         if last_segment.lower() != last_segment:
             names.append(last_segment.lower())
     else:
         # Domain-only URLs
-        names.append(netloc)
-        # For domains like elfutils.org, extract the name part
         domain_parts = netloc.split(".")
         if len(domain_parts) > 1:
             if len(domain_parts) > MULTIPLE_DOMAINS:
-                # For cases like poppler.freedesktop.org
+                # For cases like poppler.freedesktop.org, only extract the subdomain
+                # since the middle domain (freedesktop) is not typically a package name
                 names.append(domain_parts[0])  # e.g., "poppler"
-                names.append(domain_parts[1])  # e.g., "freedesktop"
             else:
                 # For cases like elfutils.org
                 names.append(domain_parts[0])  # e.g., "elfutils"
@@ -162,3 +194,11 @@ def is_canonical_url(url: str) -> bool:
     if url == "":
         return False
     return normalize_url(url) == url
+
+
+if __name__ == "__main__":
+    print(
+        possible_names(
+            "gist.github.com/stning/89b6ce57e45a68e2da77a960770e5773"
+        )
+    )  # noqa: T201
