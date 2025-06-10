@@ -47,6 +47,7 @@ from permalint import possible_names
         ("github.com/user/repo", ["github.com/user/repo", "repo"]),
         ("gitlab.com/user/repo", ["gitlab.com/user/repo", "repo"]),
         ("bitbucket.org/user/repo", ["bitbucket.org/user/repo", "repo"]),
+        ("https://", []),
     ],
 )
 def test_possible_names(input_name: str, probable_names: list[str]) -> None:

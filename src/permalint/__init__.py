@@ -14,6 +14,27 @@ MIN_GITHUB_URL_PARTS = 2
 MULTIPLE_DOMAINS = 2
 
 
+def _only_protocol(url: str) -> bool:
+    """Check if a URL is only a protocol."""
+    return url.strip() in (
+        "http://",
+        "https://",
+        "git://",
+        "ssh://",
+        "git+ssh://",
+        "git+https://",
+    )
+
+
+def _is_malformed(url: str) -> bool:
+    """Check if a URL is malformed."""
+    try:
+        urlparse(url)
+    except ValueError:
+        return True
+    return False
+
+
 def normalize_url(url: str) -> str:
     """Normalize a URL according to CHAI database rules.
 
@@ -29,14 +50,7 @@ def normalize_url(url: str) -> str:
     - Handle git+ssh and git+https GitHub URLs.
     """
     # early warnings
-    if url.strip() in (
-        "http://",
-        "https://",
-        "git://",
-        "ssh://",
-        "git+ssh://",
-        "git+https://",
-    ):
+    if _only_protocol(url):
         warnings.warn(
             f"Malformed URL with only protocol: '{url}', returning ''",
             UserWarning,
@@ -61,15 +75,15 @@ def normalize_url(url: str) -> str:
     if url.startswith("git+https://github.com/"):
         url = url.replace("git+https://github.com/", "github.com/")
 
-    try:
-        parsed = urlparse(url)
-    except ValueError as e:
+    if _is_malformed(url):
         warnings.warn(
-            f"Malformed URL: '{url}', error: {e}, returning ''",
+            f"Malformed URL: '{url}', returning ''",
             UserWarning,
             stacklevel=2,
         )
         return ""
+
+    parsed = urlparse(url)
 
     netloc = parsed.netloc.lower()
     path = parsed.path.rstrip("/")
@@ -108,6 +122,17 @@ def guess_url(urls: list[str]) -> str | None:
     return None
 
 
+def _add_name_with_lowercase(names: list[str], name: str) -> None:
+    """Add a name to the list, and its lowercase variant if different.
+
+    NOTE: I don't like this, ideally upstream application should handle
+    searching by whatever case, but this is fine for now.
+    """
+    names.append(name)
+    if name.lower() != name:
+        names.append(name.lower())
+
+
 def possible_names(url: str) -> list[str]:
     """Given a URL, return a list of possible names for the package.
 
@@ -118,6 +143,15 @@ def possible_names(url: str) -> list[str]:
     extracts the repository name. For other recognizable services, extracts
     the most relevant identifier.
     """
+    # early warnings
+    if _only_protocol(url) or _is_malformed(url):
+        warnings.warn(
+            f"Invalid URL: '{url}', returning []",
+            UserWarning,
+            stacklevel=2,
+        )
+        return []
+
     # Treat the schema
     if not url.startswith(("http://", "https://")):
         url = "https://" + url
@@ -142,12 +176,7 @@ def possible_names(url: str) -> list[str]:
     if netloc in ("github.com", "gitlab.com", "bitbucket.org") and path:
         # For code hosting platforms, extract repository name (last segment)
         last_segment = path.split("/")[-1]
-        names.append(last_segment)
-        # Add lowercase version if original has uppercase
-        # NOTE: I don't like this, ideally upstream application should handle
-        # searching by whatever case, but this is fine for now
-        if last_segment.lower() != last_segment:
-            names.append(last_segment.lower())
+        _add_name_with_lowercase(names, last_segment)
     elif netloc == "gist.github.com" and path:
         # For GitHub gists, only return the full URL since there's no
         # meaningful repo name
@@ -167,12 +196,7 @@ def possible_names(url: str) -> list[str]:
     elif path:
         # For other URLs with paths, extract last segment
         last_segment = path.split("/")[-1]
-        names.append(last_segment)
-        # Add lowercase version if original has uppercase
-        # NOTE: I don't like this, ideally upstream application should handle
-        # searching by whatever case, but this is fine for now
-        if last_segment.lower() != last_segment:
-            names.append(last_segment.lower())
+        _add_name_with_lowercase(names, last_segment)
     else:
         # Domain-only URLs
         domain_parts = netloc.split(".")
@@ -197,4 +221,4 @@ def is_canonical_url(url: str) -> bool:
 
 
 if __name__ == "__main__":
-    pass
+    print(possible_names("https://github.com/ethereum/web3.js#readme"))
