@@ -218,7 +218,3 @@ def is_canonical_url(url: str) -> bool:
     if url == "":
         return False
     return normalize_url(url) == url
-
-
-if __name__ == "__main__":
-    print(possible_names("https://github.com/ethereum/web3.js#readme"))
