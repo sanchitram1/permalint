@@ -15,3 +15,6 @@ wheels/
 # cursor
 .cursorrules
 prompts/
+
+# coverage
+.coverage
