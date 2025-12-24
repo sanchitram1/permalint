@@ -3,35 +3,64 @@ name = "permalint"
 version = "0.1.15"
 description = "Lint URLs"
 authors = [{ name = "Sanchit Ram Arvind", email = "sanchitram@gmail.com" }]
-dependencies = ["ruff~=0.0", "tldextract>=5.3.0"]
+dependencies = [
+ "tldextract>=5.3.0",
+]
 readme = "README.md"
-requires-python = ">= 3.9"
+requires-python = ">= 3.13"
 
 [project.urls]
 Homepage = "https://github.com/sanchitram/permalint"
 Repository = "https://github.com/sanchitram/permalint"
 Source = "https://github.com/sanchitram/permalint"
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [tool.uv]
 managed = true
-dev-dependencies = ["pytest", "ruff", "ty"]
+package = true 
 
-[tool.hatch.metadata]
-allow-direct-references = true
+[tool.setuptools]
+package-dir = {"" = "src"}
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/permalint"]
-
-[tool.pytest.ini_options]
-pythonpath = ["src"]
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.ruff]
 line-length = 79
 
 [tool.ruff.lint]
-ignore = ["D1", "D211", "D213", "S101", "FBT001"]
+ignore = ["D1", "D211", "D213", "S101", "FBT001", "COM812", "D203"]
 select = ["ALL"]
+
+[tool.ruff.lint.pylint]
+max-branches = 15
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[dependency-groups]
+dev = [
+    "coveralls>=4.0.1",
+    "formdt>=0.5.0",
+    "pytest>=9.0.0",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.10",
+    "ty>=0.0.6",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+minversion = "9.0"
+addopts = ["-ra", "-q", "--cov", "--cov-report=term-missing"]
+python_files = ["test_*.py", "*_test.py"]
+
+[tool.coverage.run]
+source = [
+    "src"
+]
+omit = [
+    "tests/*.py"
+]
+
+[tool.coverage.report]
+show_missing = true
