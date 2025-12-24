@@ -133,6 +133,15 @@ wheels = [
 ]
 
 [[package]]
+name = "formdt"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/50/44/f70eb3a876cc486bce569c34153a6ed289c7b119d3dd9d78f328f3f658e8/formdt-0.5.0.tar.gz", hash = "sha256:e00c34856b5f1dc746188800bbc430a217f42a894fb152c536f872ddfba8ce67", size = 7211, upload-time = "2025-12-24T13:49:27.918Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/9b/447866f8f42d88a7ce2b0592dae671a60a395650cea04c723748f1b3daa2/formdt-0.5.0-py3-none-any.whl", hash = "sha256:16466d0a0471c22ff0f13247781b1a9741f18a6820de37c0c5169a89106057cb", size = 5823, upload-time = "2025-12-24T13:49:28.859Z" },
+]
+
+[[package]]
 name = "idna"
 version = "3.10"
 source = { registry = "https://pypi.org/simple" }
@@ -170,6 +179,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "coveralls" },
+    { name = "formdt" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
@@ -182,6 +192,7 @@ requires-dist = [{ name = "tldextract", specifier = ">=5.3.0" }]
 [package.metadata.requires-dev]
 dev = [
     { name = "coveralls", specifier = ">=4.0.1" },
+    { name = "formdt", specifier = ">=0.5.0" },
     { name = "pytest", specifier = ">=9.0.0" },
     { name = "pytest-cov", specifier = ">=7.0.0" },
     { name = "ruff", specifier = ">=0.14.10" },

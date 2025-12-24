@@ -1,5 +1,10 @@
 # permalint
 
+[![Release](https://github.com/sanchitram1/permalint/actions/workflows/release.yml/badge.svg)
+](https://github.com/sanchitram1/permalint/actions/workflows/release.yml)
+[![Coverage Status](https://coveralls.io/repos/github/sanchitram1/permalint/badge.svg?branch=config)
+](https://coveralls.io/github/sanchitram1/permalint?branch=config)
+
 Lint URLs (mostly for teaxyz/chai, but hopefully other uses too)
 
 ## Features
