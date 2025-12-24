@@ -25,7 +25,7 @@ print(normalize_url(url))  # Output: github.com/user/repo
 
 ## Development
 
-- Install dependencies: `pkgx rye sync`
+- Install dependencies: `uv sync`
 - Run tests: `uv run pytest`
 - Lint: `uv run ruff check . && uv run ruff format .`
 - Type check: `uv run ty check src/`
@@ -33,7 +33,6 @@ print(normalize_url(url))  # Output: github.com/user/repo
 ## Contributing / Wishlist
 
 - `guess-canonical-url` to guess the correct URL based on a passed list of URLs
-- actual source of Homepages for
 
 ## Tasks
 
